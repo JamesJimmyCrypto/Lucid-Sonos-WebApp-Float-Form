@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lucid Mood Form</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-sky-50 p-6 min-h-screen text-slate-800">
+  <div class="max-w-xl mx-auto bg-white p-6 rounded-2xl shadow-xl space-y-6">
+    <h1 class="text-2xl font-bold text-center">True REST Float Form</h1>
+
+    <!-- Step 1: Client Input -->
+    <div id="step1">
+      <h2 class="font-semibold text-lg mb-2">1. How do you currently feel?</h2>
+
+      <label for="arousal" class="block text-sm font-medium">Arousal</label>
+      <div class="flex items-center space-x-2 mb-3">
+        <span class="text-xl">🌙</span>
+        <input id="arousal" type="range" min="0" max="1" step="0.01" value="0.5" class="flex-1" />
+        <span class="text-xl">⚡</span>
+      </div>
+
+      <label for="valence" class="block text-sm font-medium">Valence</label>
+      <div class="flex items-center space-x-2 mb-6">
+        <span class="text-xl">😟</span>
+        <input id="valence" type="range" min="0" max="1" step="0.01" value="0.5" class="flex-1" />
+        <span class="text-xl">😊</span>
+      </div>
+
+      <h2 class="font-semibold text-lg mb-2">2. What would you like to feel?</h2>
+      <select id="mode" class="w-full border border-gray-300 rounded-md p-2 mb-6">
+        <option value="calm">Calm</option>
+        <option value="focus">Focus</option>
+        <option value="energize">Energize</option>
+        <option value="sleep">Sleep</option>
+      </select>
+
+      <button onclick="goToStep2()" class="w-full bg-sky-600 hover:bg-sky-700 text-white font-semibold py-2 rounded-lg">
+        Continue
+      </button>
+    </div>
+
+    <!-- Step 2: Staff Input -->
+    <div id="step2" class="hidden">
+      <h2 class="font-semibold text-lg mb-2">3. Which pod is this for?</h2>
+      <select id="pod" class="w-full border border-gray-300 rounded-md p-2 mb-6">
+        <option value="pod1">Pod 1</option>
+        <option value="pod2">Pod 2</option>
+        <option value="pod3">Pod 3</option>
+        <option value="pod4">Pod 4</option>
+        <option value="pod5">Pod 5</option>
+        <option value="pod6">Pod 6</option>
+      </select>
+
+      <div class="flex justify-between space-x-4">
+        <button onclick="goBackToStep1()" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 rounded-lg">
+          Back
+        </button>
+        <button onclick="submitMoodForm()" class="flex-1 bg-sky-600 hover:bg-sky-700 text-white font-semibold py-2 rounded-lg">
+          Generate & Assign Music
+        </button>
+      </div>
+    </div>
+
+    <div id="status" class="text-sm text-center mt-4 text-gray-600"></div>
+  </div>
+  </div>
+
+  <script>
+    function goToStep2() {
+      document.getElementById('step1').classList.add('hidden');
+      document.getElementById('step2').classList.remove('hidden');
+    }
+
+    function goBackToStep1() {
+      document.getElementById('step2').classList.add('hidden');
+      document.getElementById('step1').classList.remove('hidden');
+    }
+
+    async function submitMoodForm() {
+      const arousal = parseFloat(document.getElementById('arousal').value);
+      const valence = parseFloat(document.getElementById('valence').value);
+      const modeId = document.getElementById('mode').value;
+      const pod = document.getElementById('pod').value;
+      const status = document.getElementById('status');
+      const button = document.querySelector('#step2 button');
+
+      button.disabled = true;
+      button.innerText = '⏳ Generating...';
+      status.innerText = '⏳ Generating music...';
+
+      try {
+        const experienceRes = await fetch('/api/lucid-proxy', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            endpoint: '/experiences',
+            body: {
+              modeId,
+              contentLibraryId: 'immersive',
+              desiredLength: 6,
+              desiredTime: 15,
+              participantId: 'spa_user_' + Date.now(),
+              targetCog: { arousal, valence }
+            }
+          })
+        });
+
+        if (!experienceRes.ok) throw new Error('Failed to create experience');
+        const experience = await experienceRes.json();
+        const sessionId = experience.runtimeMeasurementSessionID;
+        const experienceId = experience._id;
+        if (!sessionId || !experienceId) throw new Error('Missing session or experience ID');
+
+        const measureRes = await fetch('/api/lucid-proxy', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            endpoint: `/measurementSessions/${sessionId}/measurements`,
+            body: {
+              timestamp: new Date().toISOString(),
+              instrumentType: 'cli_cog_input',
+              dataType: 'cog',
+              data: { valence, arousal }
+            }
+          })
+        });
+
+        if (!measureRes.ok) throw new Error('Failed to submit measurement');
+
+        const audioRes = await fetch('/api/lucid-proxy', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            endpoint: `/experiences/${experienceId}/audio`,
+            method: 'GET'
+          })
+        });
+
+        const trackUrl = await audioRes.text();
+
+        await fetch('/api/assign', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: `pod=${encodeURIComponent(pod)}&lucid_url=${encodeURIComponent(trackUrl)}`
+        });
+
+        status.innerText = `✅ Track assigned to ${pod.toUpperCase()}! Ready to play on Sonos.`;
+      } catch (err) {
+        console.error(err);
+        status.innerText = '❌ Something went wrong assigning the track.';
+      }
+
+      button.disabled = false;
+      button.innerText = '🎵 Generate & Assign Music';
+    }
+  </script>
+</body>
+</html>

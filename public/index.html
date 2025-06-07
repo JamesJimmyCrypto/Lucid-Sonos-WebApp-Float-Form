@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Float Audio Controller</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-b from-sky-50 to-blue-100 p-4 md:p-8 min-h-screen">
+  <header class="mb-8 text-center">
+    <h1 class="text-3xl font-bold text-sky-900 mb-2">Float Audio Controller</h1>
+    <p class="text-sky-700">Manage audio stream URLs</p>
+  </header>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+
+    <!-- Pod 1 -->
+    <form action="/api/assign" method="POST" class="rounded-lg border bg-white text-gray-900 shadow-md hover:shadow-lg transition-shadow">
+      <input type="hidden" name="pod" value="pod1" />
+      <div class="flex flex-col space-y-1.5 p-6 bg-sky-700 text-white rounded-t-lg">
+        <div class="text-2xl font-semibold flex items-center gap-2">Float Pod #1</div>
+        <div class="text-sm text-sky-100">Audio stream configuration</div>
+      </div>
+      <div class="p-6 space-y-4">
+        <label for="pod-1-url" class="text-sm font-medium text-gray-700 block">Audio Stream URL</label>
+        <input id="pod-1-url" type="text" name="lucid_url" required placeholder="https://example.com/audio-stream"
+          class="w-full h-10 rounded-md border border-gray-300 px-3 py-2" />
+        <div id="status-pod1" class="text-sm font-medium"></div>
+      </div>
+      <div class="p-6 pt-0">
+        <button type="submit" class="w-full rounded-md text-sm font-medium text-white h-10 px-4 py-2 bg-sky-600 hover:bg-sky-700">
+          Update Stream
+        </button>
+      </div>
+    </form>
+
+    <!-- Pod 2 -->
+    <form action="/api/assign" method="POST" class="rounded-lg border bg-white text-gray-900 shadow-md hover:shadow-lg transition-shadow">
+      <input type="hidden" name="pod" value="pod2" />
+      <div class="flex flex-col space-y-1.5 p-6 bg-sky-700 text-white rounded-t-lg">
+        <div class="text-2xl font-semibold flex items-center gap-2">Float Pod #2</div>
+        <div class="text-sm text-sky-100">Audio stream configuration</div>
+      </div>
+      <div class="p-6 space-y-4">
+        <label for="pod-2-url" class="text-sm font-medium text-gray-700 block">Audio Stream URL</label>
+        <input id="pod-2-url" type="text" name="lucid_url" required placeholder="https://example.com/audio-stream"
+          class="w-full h-10 rounded-md border border-gray-300 px-3 py-2" />
+        <div id="status-pod2" class="text-sm font-medium"></div>
+      </div>
+      <div class="p-6 pt-0">
+        <button type="submit" class="w-full rounded-md text-sm font-medium text-white h-10 px-4 py-2 bg-sky-600 hover:bg-sky-700">
+          Update Stream
+        </button>
+      </div>
+    </form>
+
+    <!-- Pod 3 -->
+    <form action="/api/assign" method="POST" class="rounded-lg border bg-white text-gray-900 shadow-md hover:shadow-lg transition-shadow">
+      <input type="hidden" name="pod" value="pod3" />
+      <div class="flex flex-col space-y-1.5 p-6 bg-sky-700 text-white rounded-t-lg">
+        <div class="text-2xl font-semibold flex items-center gap-2">Float Pod #3</div>
+        <div class="text-sm text-sky-100">Audio stream configuration</div>
+      </div>
+      <div class="p-6 space-y-4">
+        <label for="pod-3-url" class="text-sm font-medium text-gray-700 block">Audio Stream URL</label>
+        <input id="pod-3-url" type="text" name="lucid_url" required placeholder="https://example.com/audio-stream"
+          class="w-full h-10 rounded-md border border-gray-300 px-3 py-2" />
+        <div id="status-pod3" class="text-sm font-medium"></div>
+      </div>
+      <div class="p-6 pt-0">
+        <button type="submit" class="w-full rounded-md text-sm font-medium text-white h-10 px-4 py-2 bg-sky-600 hover:bg-sky-700">
+          Update Stream
+        </button>
+      </div>
+    </form>
+
+    <!-- Pod 4 -->
+    <form action="/api/assign" method="POST" class="rounded-lg border bg-white text-gray-900 shadow-md hover:shadow-lg transition-shadow">
+      <input type="hidden" name="pod" value="pod4" />
+      <div class="flex flex-col space-y-1.5 p-6 bg-sky-700 text-white rounded-t-lg">
+        <div class="text-2xl font-semibold flex items-center gap-2">Float Pod #4</div>
+        <div class="text-sm text-sky-100">Audio stream configuration</div>
+      </div>
+      <div class="p-6 space-y-4">
+        <label for="pod-4-url" class="text-sm font-medium text-gray-700 block">Audio Stream URL</label>
+        <input id="pod-4-url" type="text" name="lucid_url" required placeholder="https://example.com/audio-stream"
+          class="w-full h-10 rounded-md border border-gray-300 px-3 py-2" />
+        <div id="status-pod4" class="text-sm font-medium"></div>
+      </div>
+      <div class="p-6 pt-0">
+        <button type="submit" class="w-full rounded-md text-sm font-medium text-white h-10 px-4 py-2 bg-sky-600 hover:bg-sky-700">
+          Update Stream
+        </button>
+      </div>
+    </form>
+
+    <!-- Pod 5 -->
+    <form action="/api/assign" method="POST" class="rounded-lg border bg-white text-gray-900 shadow-md hover:shadow-lg transition-shadow">
+      <input type="hidden" name="pod" value="pod5" />
+      <div class="flex flex-col space-y-1.5 p-6 bg-sky-700 text-white rounded-t-lg">
+        <div class="text-2xl font-semibold flex items-center gap-2">Float Pod #5</div>
+        <div class="text-sm text-sky-100">Audio stream configuration</div>
+      </div>
+      <div class="p-6 space-y-4">
+        <label for="pod-5-url" class="text-sm font-medium text-gray-700 block">Audio Stream URL</label>
+        <input id="pod-5-url" type="text" name="lucid_url" required placeholder="https://example.com/audio-stream"
+          class="w-full h-10 rounded-md border border-gray-300 px-3 py-2" />
+        <div id="status-pod5" class="text-sm font-medium"></div>
+      </div>
+      <div class="p-6 pt-0">
+        <button type="submit" class="w-full rounded-md text-sm font-medium text-white h-10 px-4 py-2 bg-sky-600 hover:bg-sky-700">
+          Update Stream
+        </button>
+      </div>
+    </form>
+
+    <!-- Pod 6 -->
+    <form action="/api/assign" method="POST" class="rounded-lg border bg-white text-gray-900 shadow-md hover:shadow-lg transition-shadow">
+      <input type="hidden" name="pod" value="pod6" />
+      <div class="flex flex-col space-y-1.5 p-6 bg-sky-700 text-white rounded-t-lg">
+        <div class="text-2xl font-semibold flex items-center gap-2">Float Pod #6</div>
+        <div class="text-sm text-sky-100">Audio stream configuration</div>
+      </div>
+      <div class="p-6 space-y-4">
+        <label for="pod-6-url" class="text-sm font-medium text-gray-700 block">Audio Stream URL</label>
+        <input id="pod-6-url" type="text" name="lucid_url" required placeholder="https://example.com/audio-stream"
+          class="w-full h-10 rounded-md border border-gray-300 px-3 py-2" />
+        <div id="status-pod6" class="text-sm font-medium"></div>
+      </div>
+      <div class="p-6 pt-0">
+        <button type="submit" class="w-full rounded-md text-sm font-medium text-white h-10 px-4 py-2 bg-sky-600 hover:bg-sky-700">
+          Update Stream
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    async function loadPodStatuses() {
+      try {
+        const res = await fetch("/status");
+        const data = await res.json();
+
+        for (let i = 1; i <= 6; i++) {
+          const podKey = `pod${i}`;
+          const el = document.getElementById(`status-${podKey}`);
+          const assigned = data[podKey] && data[podKey].startsWith("http");
+
+          el.textContent = assigned ? "✅ Track Assigned" : "🚫 No Track Assigned";
+          el.className = assigned
+            ? "text-green-600 text-sm font-medium"
+            : "text-red-500 text-sm font-medium";
+        }
+      } catch (err) {
+        console.error("Failed to load pod statuses", err);
+      }
+    }
+
+    window.addEventListener("DOMContentLoaded", loadPodStatuses);
+  </script>
+</body>
+</html>
